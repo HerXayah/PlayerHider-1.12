@@ -29,7 +29,7 @@ public class Emily extends LabyModAddon {
 
 
     private boolean renderPlayers = true;
-    private boolean voiceexist = false;
+    private boolean voiceexist;
     private boolean muted = false;
 
     private boolean configMessage = true;
@@ -65,7 +65,11 @@ public class Emily extends LabyModAddon {
             if (addon == null || addon.about == null || addon.about.name == null) {
                 continue;
             }
-            voiceexist = addon.about.name.equals("VoiceChat") && addon instanceof VoiceChat;
+            if (addon.about.name.equals("VoiceChat") && addon instanceof VoiceChat) {
+                setVoiceexist(true);
+            } else {
+                setVoiceexist(false);
+            }
             System.out.println("Success");
         }
     }

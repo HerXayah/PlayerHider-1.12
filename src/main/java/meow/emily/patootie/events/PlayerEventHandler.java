@@ -12,8 +12,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class PlayerEventHandler {
 
@@ -29,39 +27,44 @@ public class PlayerEventHandler {
                     for (String s : localPlayersToRender) {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
-                            if (instance.isVoiceexist()) {
+                            //LabyMod.getInstance().displayMessageInChat("§a" + instance.isVoiceexist() + "§7 " + instance.isMuted());
+                           /* if (instance.isVoiceexist()) {
                                 if (instance.isMuted()) {
+                                    LabyMod.getInstance().displayMessageInChat("§a" + "here");
                                     mute(enPlayer);
-                                } else {
-                                    unmute(enPlayer);
                                 }
-
-                            }
+                            } else if(!instance.isMuted()) {
+                                unmute(enPlayer);
+                            } */
                         }
+
                     }
                 }
             }
         }
     }
 
+// Needs fixing
+    /*
     public void mute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
-        UUID uuid = player.getUniqueID();
-        instance.getVoiceChat().getPlayerVolumes().put(uuid, 0);
-        instance.savePlayersToRender();
+        instance.getVoiceChat().getPlayerVolumes().put(UUID.fromString(instance.getPlayersToRender().toString()), 0);
+        instance.getVoiceChat().savePlayersVolumes();
     }
 
     public void unmute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
-        Map<UUID, Integer> playerVolumes = instance.getVoiceChat().getPlayerVolumes();
-        UUID uuid = player.getUniqueID();
-        if (playerVolumes.containsKey(uuid)) {
-            playerVolumes.put(uuid, instance.getVoiceChat().getVolume(uuid));
+        UUID uuid = player.getGameProfile().getId();
+        Map<UUID, Integer> volume = instance.getVoiceChat().getPlayerVolumes();
+        volume.put(uuid, 100);
+        if (volume.containsKey(uuid)) {
+            volume.put(uuid, instance.getVoiceChat().getVolume(uuid));
         } else {
-            playerVolumes.put(uuid, 100);
+            volume.put(uuid, 100);
         }
+        instance.getVoiceChat().savePlayersVolumes();
         instance.savePlayersToRender();
-    }
+    } */
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
