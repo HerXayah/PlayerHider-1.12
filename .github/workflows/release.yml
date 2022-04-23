@@ -47,5 +47,5 @@ jobs:
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
-          artifacts: "build/libs/PlayerHider-1.12.2.jar"
+          artifacts: "build/libs/PlayerHider-1.12.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
