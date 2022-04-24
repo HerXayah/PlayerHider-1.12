@@ -3,6 +3,8 @@ package meow.emily.patootie.events;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import meow.emily.patootie.Emily;
 import meow.emily.patootie.util.Utils;
+import net.labymod.addon.AddonLoader;
+import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.main.LabyMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,8 +14,15 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerEventHandler {
+
+    // UUID VoiceCHat 1.12
+    private final UUID vcUuid12 = UUID.fromString("24c0644d-ad56-4609-876d-6e9da3cc9794");
+    // UUID VoiceChat 1.8
+    private final UUID VcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
 
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
@@ -27,17 +36,16 @@ public class PlayerEventHandler {
                     for (String s : localPlayersToRender) {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
-                            //LabyMod.getInstance().displayMessageInChat("§a" + instance.isVoiceexist() + "§7 " + instance.isMuted());
-                           /* if (instance.isVoiceexist()) {
+                            // LabyMod.getInstance().displayMessageInChat("§a" + instance.isVoiceexist());
+                            if (instance.isVoiceexist()) {
                                 if (instance.isMuted()) {
-                                    LabyMod.getInstance().displayMessageInChat("§a" + "here");
+                                    //    LabyMod.getInstance().displayMessageInChat("§a" + "here");
                                     mute(enPlayer);
+                                } else {
+                                    unmute(enPlayer);
                                 }
-                            } else if(!instance.isMuted()) {
-                                unmute(enPlayer);
-                            } */
+                            }
                         }
-
                     }
                 }
             }
@@ -45,26 +53,26 @@ public class PlayerEventHandler {
     }
 
 // Needs fixing
-    /*
+
     public void mute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
-        instance.getVoiceChat().getPlayerVolumes().put(UUID.fromString(instance.getPlayersToRender().toString()), 0);
-        instance.getVoiceChat().savePlayersVolumes();
+        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
+        voiceChat.getPlayerVolumes().put(player.getUniqueID(), 0);
+        voiceChat.savePlayersVolumes();
     }
 
     public void unmute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
+        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
         UUID uuid = player.getGameProfile().getId();
-        Map<UUID, Integer> volume = instance.getVoiceChat().getPlayerVolumes();
-        volume.put(uuid, 100);
+        Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
         if (volume.containsKey(uuid)) {
-            volume.put(uuid, instance.getVoiceChat().getVolume(uuid));
+            volume.put(uuid, voiceChat.getVolume(uuid));
         } else {
             volume.put(uuid, 100);
         }
-        instance.getVoiceChat().savePlayersVolumes();
-        instance.savePlayersToRender();
-    } */
+        voiceChat.savePlayersVolumes();
+    }
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {

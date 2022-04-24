@@ -34,6 +34,11 @@ public class Emily extends LabyModAddon {
 
     private boolean configMessage = true;
 
+    // UUID VoiceCHat 1.12
+    private final UUID vcUuid12 = UUID.fromString("24c0644d-ad56-4609-876d-6e9da3cc9794");
+    // UUID VoiceChat 1.8
+    private final UUID VcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
+
     private List<String> playersToRenderString = new ArrayList<>();
 
     public Map<UUID, Integer> playersToRender = new HashMap<>();
@@ -55,23 +60,17 @@ public class Emily extends LabyModAddon {
                 (user, entityPlayer, networkPlayerInfo, list) ->
                         list.add(createBlacklistRemoval())
         );
-        checkAddonExist();
-        System.out.println("Starting...");
-    }
 
-    public void checkAddonExist() {
-        List<LabyModAddon> addons = AddonLoader.getAddons();
-        for (LabyModAddon addon : addons) {
-            if (addon == null || addon.about == null || addon.about.name == null) {
-                continue;
+        if (!this.voiceexist) {
+            LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
+            if (addon instanceof VoiceChat) {
+                this.voiceChat = (VoiceChat) addon;
+                LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
             }
-            if (addon.about.name.equals("VoiceChat") && addon instanceof VoiceChat) {
-                setVoiceexist(true);
-            } else {
-                setVoiceexist(false);
-            }
-            System.out.println("Success");
+            this.voiceexist = true;
         }
+
+        System.out.println("Starting...");
     }
 
     private UserActionEntry createBlacklistEntry() {
@@ -112,11 +111,20 @@ public class Emily extends LabyModAddon {
                 new UserActionEntry.ActionExecutor() {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
+                        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
                         //  getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
                         //labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
                             RemovePlayer(networkPlayerInfo.getGameProfile().getName());
-                            playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 100);
+                            UUID uuid = networkPlayerInfo.getGameProfile().getId();
+                            Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
+                            volume.put(uuid, 100);
+                            if (volume.containsKey(uuid)) {
+                                volume.put(uuid, voiceChat.getVolume(uuid));
+                            } else {
+                                volume.put(uuid, 100);
+                            }
+                            voiceChat.savePlayersVolumes();
                             savePlayersToRender();
                             saveConfig();
                         } catch (Exception e) {
