@@ -262,18 +262,6 @@ public class Emily extends LabyModAddon {
         return this.key;
     }
 
-    public void setKey(int key) {
-        this.key = key;
-    }
-
-    public Map<UUID, Integer> getPlayersToRender() {
-        return this.playersToRender;
-    }
-
-    public void setPlayersToRender(Map<UUID, Integer> playersToRender) {
-        this.playersToRender = playersToRender;
-    }
-
     public boolean isRenderPlayers() {
         return this.renderPlayers;
     }
@@ -294,25 +282,8 @@ public class Emily extends LabyModAddon {
         return this.configMessage;
     }
 
-    public void setConfigMessage(boolean ConfigMessage) {
-        this.configMessage = ConfigMessage;
-    }
-
-    public VoiceChat getVoiceChat() {
-        return this.voiceChat;
-    }
-
-    public void setVoiceChat(VoiceChat voiceChat) {
-        this.voiceChat = voiceChat;
-    }
-
-
     public boolean isVoiceexist() {
         return voiceexist;
-    }
-
-    public void setVoiceexist(boolean voiceexist) {
-        this.voiceexist = voiceexist;
     }
 
     public boolean isMuted() {
