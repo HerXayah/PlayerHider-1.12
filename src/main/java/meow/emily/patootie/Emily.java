@@ -16,8 +16,6 @@ import net.labymod.utils.Material;
 import net.labymod.utils.ModColor;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -65,7 +63,7 @@ public class Emily extends LabyModAddon {
         System.out.println(PREFIX + "Starting...");
     }
 
-    @SubscribeEvent
+    /* @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (!voiceexist) {
             for (LabyModAddon addon : AddonLoader.getAddons()) {
@@ -83,7 +81,7 @@ public class Emily extends LabyModAddon {
                 }
             }
         }
-    }
+    } */
 
     private UserActionEntry createBlacklistEntry() {
         return new UserActionEntry(
@@ -282,15 +280,19 @@ public class Emily extends LabyModAddon {
         return this.configMessage;
     }
 
-    public boolean isVoiceexist() {
-        return voiceexist;
-    }
-
     public boolean isMuted() {
         return muted;
     }
 
     public void setMuted(boolean muted) {
         this.muted = muted;
+    }
+
+    public boolean isVoiceexist() {
+        return voiceexist;
+    }
+
+    public void setVoiceexist(boolean voiceexist) {
+        this.voiceexist = voiceexist;
     }
 }

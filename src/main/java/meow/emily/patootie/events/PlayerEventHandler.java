@@ -5,12 +5,14 @@ import meow.emily.patootie.Emily;
 import meow.emily.patootie.util.Utils;
 import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
+import net.labymod.api.LabyModAddon;
 import net.labymod.main.LabyMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -23,6 +25,20 @@ public class PlayerEventHandler {
     private final UUID vcUuid12 = UUID.fromString("24c0644d-ad56-4609-876d-6e9da3cc9794");
     // UUID VoiceChat 1.8
     private final UUID VcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        Emily instance = Emily.getInstance();
+        if (!instance.isVoiceexist()) {
+            LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
+            if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
+                VoiceChat voiceChat = (VoiceChat) addon;
+                instance.setVoiceexist(true);
+            } else {
+                instance.setVoiceexist(false);
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
