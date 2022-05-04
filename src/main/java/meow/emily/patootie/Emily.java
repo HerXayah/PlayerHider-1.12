@@ -29,10 +29,12 @@ public class Emily extends LabyModAddon {
     private VoiceChat voiceChat;
 
 
-    private boolean renderPlayers = true;
+    private boolean renderPlayers;
+    private boolean modOn;
     // UUID VoiceCHat 1.12
     private final UUID vcUuid12 = UUID.fromString("24c0644d-ad56-4609-876d-6e9da3cc9794");
     private boolean muted = false;
+    private boolean playerUnmute = false;
 
     private boolean configMessage = true;
     // UUID VoiceChat 1.8
@@ -59,8 +61,8 @@ public class Emily extends LabyModAddon {
                 (user, entityPlayer, networkPlayerInfo, list) ->
                         list.add(createBlacklistRemoval())
         );
-        System.out.println(PREFIX + "Enabled!");
-        System.out.println(PREFIX + "Starting...");
+
+        System.out.println("Starting...");
     }
 
     /* @SubscribeEvent
@@ -70,13 +72,13 @@ public class Emily extends LabyModAddon {
                 if (addon == null || addon.about == null || addon.about.name == null) {
                     continue;
                 }
-                LabyModAddon voicechat = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
+                LabyModAddon voicechat = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
                 if (voicechat instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
                     voiceChat = (VoiceChat) addon;
-                    //LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
+                    System.out.println(PREFIX + "VoiceChat found!");
                     voiceexist = true;
                 } else {
-                    //LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
+                    System.out.println(PREFIX + "VoiceChat not found!");
                     voiceexist = false;
                 }
             }
@@ -94,6 +96,14 @@ public class Emily extends LabyModAddon {
                         // getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
                         //labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
+                            RemovePlayer(networkPlayerInfo.getGameProfile().getName());
+                            UUID uuid = networkPlayerInfo.getGameProfile().getId();
+                            if (isVoiceexist()) {
+                                VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
+                                Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
+                                volume.put(uuid, 0);
+                                voiceChat.savePlayersVolumes();
+                            }
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
                             playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
@@ -121,8 +131,6 @@ public class Emily extends LabyModAddon {
                 new UserActionEntry.ActionExecutor() {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                        //  getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
-                        //labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
                             RemovePlayer(networkPlayerInfo.getGameProfile().getName());
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
@@ -157,6 +165,8 @@ public class Emily extends LabyModAddon {
     public void loadConfig() {
         JsonObject config = getConfig();
         this.renderPlayers = config.has("renderPlayers") && config.get("renderPlayers").getAsBoolean();
+        this.modOn = config.has("enabled") && config.get("enabled").getAsBoolean();
+        this.playerUnmute = config.has("playerUnmute") && config.get("playerUnmute").getAsBoolean();
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
         this.configMessage = config.has("configMessage") && config.get("configMessage").getAsBoolean();
         if (config.has("playersToRenderString")) {
@@ -191,12 +201,17 @@ public class Emily extends LabyModAddon {
         subSettings.add(new BooleanElement(
                 "Enable PlayerHider",
                 this, new ControlElement.IconData(Material.REDSTONE),
-                "renderPlayers", renderPlayers)
+                "enabled", isModOn())
         );
         subSettings.add(new BooleanElement(
                 "Enable Messages",
                 this, new ControlElement.IconData(Material.WOOL),
                 "configMessage", configMessage)
+        );
+        subSettings.add(new BooleanElement(
+                "Unmute Players on Unhide",
+                this, new ControlElement.IconData(Material.BURNING_FURNACE),
+                "playerUnmute", playerUnmute)
         );
         KeyElement keyElement = new KeyElement(
                 "Key",
@@ -260,6 +275,18 @@ public class Emily extends LabyModAddon {
         return this.key;
     }
 
+    public void setKey(int key) {
+        this.key = key;
+    }
+
+    public Map<UUID, Integer> getPlayersToRender() {
+        return this.playersToRender;
+    }
+
+    public void setPlayersToRender(Map<UUID, Integer> playersToRender) {
+        this.playersToRender = playersToRender;
+    }
+
     public boolean isRenderPlayers() {
         return this.renderPlayers;
     }
@@ -280,6 +307,27 @@ public class Emily extends LabyModAddon {
         return this.configMessage;
     }
 
+    public void setConfigMessage(boolean ConfigMessage) {
+        this.configMessage = ConfigMessage;
+    }
+
+    public VoiceChat getVoiceChat() {
+        return this.voiceChat;
+    }
+
+    public void setVoiceChat(VoiceChat voiceChat) {
+        this.voiceChat = voiceChat;
+    }
+
+
+    public boolean isVoiceexist() {
+        return voiceexist;
+    }
+
+    public void setVoiceexist(boolean voiceexist) {
+        this.voiceexist = voiceexist;
+    }
+
     public boolean isMuted() {
         return muted;
     }
@@ -288,11 +336,19 @@ public class Emily extends LabyModAddon {
         this.muted = muted;
     }
 
-    public boolean isVoiceexist() {
-        return voiceexist;
+    public boolean isPlayerUnmute() {
+        return playerUnmute;
     }
 
-    public void setVoiceexist(boolean voiceexist) {
-        this.voiceexist = voiceexist;
+    public void setPlayerUnmute(boolean playerUnmute) {
+        this.playerUnmute = playerUnmute;
+    }
+
+    public boolean isModOn() {
+        return modOn;
+    }
+
+    public void setModOn(boolean modOn) {
+        this.modOn = modOn;
     }
 }
