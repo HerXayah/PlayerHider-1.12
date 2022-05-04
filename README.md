@@ -3,13 +3,13 @@
 An Labymod Addon to hide players from view and VoiceChat.
 Doesnt work on Vanilla Version, due to the event not implemented. Use with Labymod + Forge.
 
-[![Build Addon](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml/badge.svg)](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml)
+[![Build Addon](https://github.com/PrincessAkira/PlayerHider-1.12/actions/workflows/release.yml/badge.svg)](https://github.com/PrincessAkira/PlayerHider-1.12/actions/workflows/release.yml)
 
 
 ## Help needed
 
 ```
-- Unmute Players in the OnKey Event.
+- Unmute Players in the OnKey Event. *Its buggy and has weird edge cases*
 - Hide Voicechat Icon
 ``` 
 
