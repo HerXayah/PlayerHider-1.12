@@ -4,6 +4,8 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
+import java.util.UUID;
+
 public class Utils {
     /**
      * Checks if the given entity is an NPC
@@ -13,11 +15,15 @@ public class Utils {
      */
     public static boolean isNPC(Entity entity) {
         if (!(entity instanceof EntityOtherPlayerMP)) {
-            return false;
+            return true;
         }
 
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
 
-        return entity.getUniqueID().version() == 2 && entityLivingBase.getHealth() == 20.0F && !entityLivingBase.isPlayerSleeping();
+        return entity.getUniqueID().version() != 2 || entityLivingBase.getHealth() != 20.0F || entityLivingBase.isPlayerSleeping();
+    }
+
+    public static UUID toUUID(String s) {
+        return UUID.fromString(s);
     }
 }

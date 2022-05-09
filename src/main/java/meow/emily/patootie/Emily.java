@@ -28,17 +28,17 @@ public class Emily extends LabyModAddon {
     private static Emily instance;
     private VoiceChat voiceChat;
 
-
     private boolean renderPlayers;
     private boolean modOn;
-    // UUID VoiceCHat 1.12
+
     private final UUID vcUuid12 = UUID.fromString("24c0644d-ad56-4609-876d-6e9da3cc9794");
+    private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
+
     private boolean muted = false;
     private boolean playerUnmute = false;
 
     private boolean configMessage = true;
-    // UUID VoiceChat 1.8
-    private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
+    private LabyModAddon addon;
     public Map<UUID, Integer> playersToRender = new HashMap<>();
 
     private List<String> playersToRenderString = new ArrayList<>();
@@ -72,7 +72,7 @@ public class Emily extends LabyModAddon {
                 if (addon == null || addon.about == null || addon.about.name == null) {
                     continue;
                 }
-                LabyModAddon voicechat = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
+                LabyModAddon voicechat = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf()));
                 if (voicechat instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
                     voiceChat = (VoiceChat) addon;
                     System.out.println(PREFIX + "VoiceChat found!");
@@ -93,14 +93,13 @@ public class Emily extends LabyModAddon {
                 new UserActionEntry.ActionExecutor() {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                        // getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
-                        //labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
-                            RemovePlayer(networkPlayerInfo.getGameProfile().getName());
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
+                            LabyMod.getInstance().displayMessageInChat(networkPlayerInfo.getGameProfile().getId().toString());
+                            VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(vcUuid8);
                             if (isVoiceexist()) {
-                                VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
                                 Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
+                                voiceChat.getPlayerVolumes().put(uuid, 0);
                                 volume.put(uuid, 0);
                                 voiceChat.savePlayersVolumes();
                             }
@@ -134,8 +133,8 @@ public class Emily extends LabyModAddon {
                         try {
                             RemovePlayer(networkPlayerInfo.getGameProfile().getName());
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
+                            VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(vcUuid12);
                             if (isVoiceexist()) {
-                                VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
                                 Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
                                 volume.put(uuid, 100);
                                 if (volume.containsKey(uuid)) {
@@ -351,4 +350,5 @@ public class Emily extends LabyModAddon {
     public void setModOn(boolean modOn) {
         this.modOn = modOn;
     }
+
 }

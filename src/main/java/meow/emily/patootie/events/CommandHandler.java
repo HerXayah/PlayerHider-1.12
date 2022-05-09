@@ -13,22 +13,10 @@ public class CommandHandler implements MessageSendEvent {
         if (s.startsWith("/ph add")) {
             EntityPlayer player = Minecraft.getMinecraft().player;
             String[] args = new String[0];
-            if (args.length > 0) {
-                if (args[0].equalsIgnoreCase("add")) {
-                    instance.getPlayersToRenderString().add(args[1]);
-                    return true;
-                }
-            }
         }
         if (s.startsWith("/ph remove")) {
             EntityPlayer player = Minecraft.getMinecraft().player;
             String[] args = new String[0];
-            if (args.length > 0) {
-                if (args[0].equalsIgnoreCase("remove")) {
-                    instance.getPlayersToRenderString().removeIf(user -> user.equals(s));
-                    return true;
-                }
-            }
         }
         return false;
     }

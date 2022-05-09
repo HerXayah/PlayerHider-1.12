@@ -9,7 +9,6 @@ Doesnt work on Vanilla Version, due to the event not implemented. Use with Labym
 ## Help needed
 
 ```
-- Unmute Players in the OnKey Event. *Its buggy and has weird edge cases*
 - Hide Voicechat Icon
 ``` 
 

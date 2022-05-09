@@ -48,55 +48,42 @@ public class PlayerEventHandler {
         if (instance.isRenderPlayers() && instance.isModOn()) {
             if (instance.isRenderPlayers() && !enPlayer.equals(Minecraft.getMinecraft().player)) {
                 List<String> localPlayersToRender = instance.getPlayersToRenderString();
-                if (!Utils.isNPC(enPlayer)) {
+                if (Utils.isNPC(enPlayer)) {
                     e.setCanceled(false);
                     for (String s : localPlayersToRender) {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
-                            if (instance.isVoiceexist()) {
-                                if (instance.isMuted()) {
-                                    mute(enPlayer);
-                                }
-                            }
                         }
                     }
                 }
             }
-        } /* else {
-            if (instance.isPlayerUnmute() && instance.isVoiceexist() && !enPlayer.equals(Minecraft.getMinecraft().thePlayer && !instance.isModOn())) {
-                if (!instance.isRenderPlayers() && !Utils.isNPC(enPlayer)) {
-                    Map<UUID, Integer> volume = instance.getPlayersToRender();
-                    // for each uuid in the map
-                    for (UUID uuid : volume.keySet()) {
-                        // if the uuid is the same as the player
-                        if (uuid.equals(enPlayer.getUniqueID())) {
-                            // get the volume
-                            unmute(enPlayer);
-                        }
-                    }
-                    instance.setPlayerUnmute(!instance.isPlayerUnmute());
-                }
-            }
-        } */
+        }
     }
 
-    // Call unmute when mod is also disabled on player.
-    // currently only works when player is invis, otherwise wont unmute.
     public void mute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
         VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
-        voiceChat.getPlayerVolumes().put(player.getUniqueID(), 0);
-        voiceChat.savePlayersVolumes();
+        if (!player.equals(Minecraft.getMinecraft().player)) {
+            voiceChat.getPlayerVolumes().put(player.getUniqueID(), 0);
+            voiceChat.savePlayersVolumes();
+        }
+    }
+
+    public void RemovePlayer(String s) {
+        // remove from the list
+        Emily instance = Emily.getInstance();
+        instance.getPlayersToRenderString().remove(s);
+        instance.savePlayersToRenderString();
+        //  playersToRenderString.removeIf(player -> player.equals(s));
+        instance.saveConfig();
     }
 
     public void unmute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
         VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
-        UUID uuid = player.getGameProfile().getId();
+        UUID uuid = player.getUniqueID();
         Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
-        if (volume.containsKey(uuid)) {
-            volume.put(uuid, voiceChat.getVolume(uuid));
-        } else {
+        if (!player.equals(Minecraft.getMinecraft().player)) {
             volume.put(uuid, 100);
         }
         voiceChat.savePlayersVolumes();
@@ -114,10 +101,13 @@ public class PlayerEventHandler {
                         instance.setRenderPlayers(false);
                         instance.setMuted(false);
                         instance.saveConfig();
-                        if (instance.isVoiceexist()) {
-                            if (enPlayer != null) {
-                                unmute(enPlayer);
-                            }
+                        if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
+                            Minecraft.getMinecraft().world.playerEntities.stream()
+                                    .filter(entityPlayer ->
+                                            Emily.getInstance().getPlayersToRenderString()
+                                                    .contains(entityPlayer.getName())).
+                                    forEach(this::unmute);
+                            //RemovePlayer(enPlayer.getGameProfile().getName());
                         }
                         if (instance.isConfigMessage()) {
                             labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.GREEN + " on");
@@ -128,7 +118,11 @@ public class PlayerEventHandler {
                         instance.saveConfig();
                         if (instance.isVoiceexist()) {
                             if (enPlayer != null) {
-                                mute(enPlayer);
+                                Minecraft.getMinecraft().world.playerEntities.stream()
+                                        .filter(entityPlayer ->
+                                                Emily.getInstance().getPlayersToRenderString()
+                                                        .contains(entityPlayer.getName())).
+                                        forEach(this::mute);
                             }
                         }
                         if (instance.isConfigMessage()) {
