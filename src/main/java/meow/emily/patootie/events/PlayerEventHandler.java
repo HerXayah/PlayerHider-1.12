@@ -116,14 +116,12 @@ public class PlayerEventHandler {
                         instance.setRenderPlayers(true);
                         instance.setMuted(true);
                         instance.saveConfig();
-                        if (instance.isVoiceexist()) {
-                            if (enPlayer != null) {
-                                Minecraft.getMinecraft().world.playerEntities.stream()
-                                        .filter(entityPlayer ->
-                                                Emily.getInstance().getPlayersToRenderString()
-                                                        .contains(entityPlayer.getName())).
-                                        forEach(this::mute);
-                            }
+                        if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
+                            Minecraft.getMinecraft().world.playerEntities.stream()
+                                    .filter(entityPlayer ->
+                                            Emily.getInstance().getPlayersToRenderString()
+                                                    .contains(entityPlayer.getName())).
+                                    forEach(this::mute);
                         }
                         if (instance.isConfigMessage()) {
                             labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.DARK_RED + " off");

@@ -61,29 +61,7 @@ public class Emily extends LabyModAddon {
                 (user, entityPlayer, networkPlayerInfo, list) ->
                         list.add(createBlacklistRemoval())
         );
-
-        System.out.println("Starting...");
     }
-
-    /* @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        if (!voiceexist) {
-            for (LabyModAddon addon : AddonLoader.getAddons()) {
-                if (addon == null || addon.about == null || addon.about.name == null) {
-                    continue;
-                }
-                LabyModAddon voicechat = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf()));
-                if (voicechat instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
-                    voiceChat = (VoiceChat) addon;
-                    System.out.println(PREFIX + "VoiceChat found!");
-                    voiceexist = true;
-                } else {
-                    System.out.println(PREFIX + "VoiceChat not found!");
-                    voiceexist = false;
-                }
-            }
-        }
-    } */
 
     private UserActionEntry createBlacklistEntry() {
         return new UserActionEntry(
@@ -97,12 +75,6 @@ public class Emily extends LabyModAddon {
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
                             LabyMod.getInstance().displayMessageInChat(networkPlayerInfo.getGameProfile().getId().toString());
                             VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(vcUuid8);
-                            if (isVoiceexist()) {
-                                Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
-                                voiceChat.getPlayerVolumes().put(uuid, 0);
-                                volume.put(uuid, 0);
-                                voiceChat.savePlayersVolumes();
-                            }
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
                             playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
@@ -200,7 +172,7 @@ public class Emily extends LabyModAddon {
         subSettings.add(new BooleanElement(
                 "Enable PlayerHider",
                 this, new ControlElement.IconData(Material.REDSTONE),
-                "enabled", isModOn())
+                "enabled", modOn)
         );
         subSettings.add(new BooleanElement(
                 "Enable Messages",
@@ -217,24 +189,12 @@ public class Emily extends LabyModAddon {
                 new ControlElement.IconData(Material.REDSTONE_TORCH_ON), this.key, integer -> {
             this.key = integer;
             getConfig().addProperty("key", integer);
-            saveConfig();
         });
-
-        // If you know how to make both, THIS and the STRING Value to update simultaniously
-        // feel free to edit this in, so we can use This
-        /*
-        StringElement Blacklistbutton = new StringElement(
-                "Blacklist", new ControlElement.IconData(Material.COAL_BLOCK),
-                String.join(",", playersToRenderString), this::AddPlayer);
-        subSettings.add(new HeaderElement(ModColor.cl('a') + "Seperate them by Comma"));
-
-         */
         subSettings.add(keyElement);
     }
 
     public void RemovePlayer(String s) {
         // remove from the list
-
         playersToRenderString.remove(s);
         savePlayersToRenderString();
         //  playersToRenderString.removeIf(player -> player.equals(s));
@@ -248,7 +208,6 @@ public class Emily extends LabyModAddon {
             Integer volume = uuidIntegerEntry.getValue();
             object.addProperty(uuid, volume);
         }
-        //labyMod().displayMessageInChat(playersToRender.toString());
         getConfig().add("playersToRender", object);
         saveConfig();
     }
