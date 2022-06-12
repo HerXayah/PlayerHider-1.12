@@ -103,7 +103,7 @@ public class Emily extends LabyModAddon {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         try {
-                            RemovePlayer(networkPlayerInfo.getGameProfile().getName());
+                            removePlayer(networkPlayerInfo.getGameProfile().getName());
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
                             VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(vcUuid12);
                             if (isVoiceexist()) {
@@ -193,7 +193,7 @@ public class Emily extends LabyModAddon {
         subSettings.add(keyElement);
     }
 
-    public void RemovePlayer(String s) {
+    public void removePlayer(String s) {
         // remove from the list
         playersToRenderString.remove(s);
         savePlayersToRenderString();
@@ -212,9 +212,6 @@ public class Emily extends LabyModAddon {
         saveConfig();
     }
 
-    private LabyMod labyMod() {
-        return LabyMod.getInstance();
-    }
 
     public void savePlayersToRenderString() {
         JsonArray jsonArray = new JsonArray();
@@ -229,6 +226,16 @@ public class Emily extends LabyModAddon {
         saveConfig();
     }
 
+    /* public void  listToMap(EntityPlayer user) {
+        // convert list to map
+        playersToRenderString.forEach(player -> {
+            playersToRender.put(user.getUniqueID(), 0);    // add player to map
+        });
+    } */
+
+    private LabyMod labyMod() {
+        return LabyMod.getInstance();
+    }
     public int getKey() {
         return this.key;
     }

@@ -107,7 +107,7 @@ public class PlayerEventHandler {
                                             Emily.getInstance().getPlayersToRenderString()
                                                     .contains(entityPlayer.getName())).
                                     forEach(this::unmute);
-                            //RemovePlayer(enPlayer.getGameProfile().getName());
+                            //removePlayer(enPlayer.getGameProfile().getName());
                         }
                         if (instance.isConfigMessage()) {
                             labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.GREEN + " on");
