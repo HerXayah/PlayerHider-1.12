@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import meow.emily.patootie.events.PlayerEventHandler;
+import meow.emily.patootie.util.MessageHandler;
 import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.api.LabyModAddon;
@@ -50,6 +51,8 @@ public class Emily extends LabyModAddon {
         return instance;
     }
 
+    MessageHandler out = MessageHandler.getInstance();
+
     @Override
     public void onEnable() {
         instance = this;
@@ -73,7 +76,7 @@ public class Emily extends LabyModAddon {
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         try {
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
-                            LabyMod.getInstance().displayMessageInChat(networkPlayerInfo.getGameProfile().getId().toString());
+                            //LabyMod.getInstance().displayMessageInChat(networkPlayerInfo.getGameProfile().getId().toString());
                             VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(vcUuid8);
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
