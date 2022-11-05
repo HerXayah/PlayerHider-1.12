@@ -30,11 +30,12 @@ public class PlayerEventHandler {
     MessageHandler out = MessageHandler.getInstance();
 
     // im gonna kms ngl
-    Emily instance = Emily.getInstance();
-    LabyMod labymod = LabyMod.getInstance();
+    Minecraft minecraft = Minecraft.getMinecraft();
+
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
+        Emily instance = Emily.getInstance();
         if (!instance.isVoiceexist()) {
             LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
             if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
@@ -48,9 +49,10 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
+        Emily instance = Emily.getInstance();
         EntityPlayer enPlayer = e.getEntityPlayer();
         if (instance.isRenderPlayers() && instance.isModOn()) {
-            if (instance.isRenderPlayers() && !enPlayer.equals(Minecraft.getMinecraft().player)) {
+            if (instance.isRenderPlayers() && !enPlayer.equals(minecraft.player)) {
                 List<String> localPlayersToRender = instance.getPlayersToRenderString();
                 if (Utils.isNPC(enPlayer)) {
                     e.setCanceled(false);
@@ -65,8 +67,9 @@ public class PlayerEventHandler {
     }
 
     public void mute(EntityPlayer player) {
+        Emily instance = Emily.getInstance();
         VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
-        if (!player.equals(Minecraft.getMinecraft().player)) {
+        if (!player.equals(minecraft.player)) {
             voiceChat.getPlayerVolumes().put(player.getUniqueID(), 0);
             voiceChat.savePlayersVolumes();
         }
@@ -74,6 +77,7 @@ public class PlayerEventHandler {
 
     public void RemovePlayer(String s) {
         // remove from the list
+        Emily instance = Emily.getInstance();
         instance.getPlayersToRenderString().remove(s);
         instance.savePlayersToRenderString();
         //  playersToRenderString.removeIf(player -> player.equals(s));
@@ -81,10 +85,11 @@ public class PlayerEventHandler {
     }
 
     public void unmute(EntityPlayer player) {
+        Emily instance = Emily.getInstance();
         VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
         UUID uuid = player.getUniqueID();
         Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
-        if (!player.equals(Minecraft.getMinecraft().player)) {
+        if (!player.equals(minecraft.player)) {
             volume.put(uuid, 100);
         }
         voiceChat.savePlayersVolumes();
@@ -92,7 +97,9 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
-        EntityPlayer enPlayer = Minecraft.getMinecraft().player;
+        EntityPlayer enPlayer = minecraft.player;
+        Emily instance = Emily.getInstance();
+        LabyMod labymod = LabyMod.getInstance();
         if (instance.getKey() > -1) {
             if (Keyboard.isKeyDown(instance.getKey())) {
                 if (instance.isModOn()) {
@@ -101,11 +108,12 @@ public class PlayerEventHandler {
                         instance.setMuted(false);
                         instance.saveConfig();
                         if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
-                            Minecraft.getMinecraft().world.playerEntities.stream()
+                            minecraft.world.playerEntities.stream()
                                     .filter(entityPlayer ->
-                                            instance.getPlayersToRenderString()
+                                            Emily.getInstance().getPlayersToRenderString()
                                                     .contains(entityPlayer.getName())).
                                     forEach(this::unmute);
+                            //removePlayer(enPlayer.getGameProfile().getName());
                         }
                         if (instance.isConfigMessage()) {
                             out.sendMessage("[PH] - On");
@@ -115,9 +123,9 @@ public class PlayerEventHandler {
                         instance.setMuted(true);
                         instance.saveConfig();
                         if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
-                            Minecraft.getMinecraft().world.playerEntities.stream()
+                            minecraft.world.playerEntities.stream()
                                     .filter(entityPlayer ->
-                                            instance.getPlayersToRenderString()
+                                            Emily.getInstance().getPlayersToRenderString()
                                                     .contains(entityPlayer.getName())).
                                     forEach(this::mute);
                         }
