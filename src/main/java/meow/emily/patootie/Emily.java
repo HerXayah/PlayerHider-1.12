@@ -74,7 +74,7 @@ public class Emily extends LabyModAddon {
                         try {
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
                             //LabyMod.getInstance().displayMessageInChat(networkPlayerInfo.getGameProfile().getId().toString());
-                            VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(vcUuid8);
+                            VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(vcUuid12);
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
                             playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
