@@ -25,9 +25,6 @@ public class PlayerEventHandler {
     // UUID VoiceChat 1.8
     private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
 
-    boolean keyPressed = false;
-    boolean keystate = false;
-
     // im gonna kms ngl
     Emily instance = Emily.getInstance();
     LabyMod labymod = LabyMod.getInstance();
@@ -124,7 +121,7 @@ public class PlayerEventHandler {
                     sendMessage("[PH] - Off");
                 }
             } else {
-                SetConfig(false);
+                SetConfig(true);
                 if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
                     minecraft.world.playerEntities.stream()
                             .filter(entityPlayer ->

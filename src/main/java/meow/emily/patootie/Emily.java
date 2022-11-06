@@ -18,12 +18,8 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 public class Emily extends LabyModAddon {
-
-    private static final Logger LOGGER = Logger.getLogger("PlayerHider");
-    private static final String PREFIX = "[PH] ";
 
     private static Emily instance;
     private VoiceChat voiceChat;
