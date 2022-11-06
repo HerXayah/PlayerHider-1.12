@@ -26,7 +26,7 @@ public class PlayerEventHandler {
     private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
 
     boolean keyPressed = false;
-    int keycount = 0;
+    boolean keystate = false;
 
     // im gonna kms ngl
     Emily instance = Emily.getInstance();
@@ -90,6 +90,12 @@ public class PlayerEventHandler {
         voiceChat.savePlayersVolumes();
     }
 
+    public void SetConfig(Boolean answer) {
+        instance.setRenderPlayers(answer);
+        instance.setMuted(answer);
+        instance.saveConfig();
+    }
+
     public void sendMessage(String message) {
         try {
             labymod.displayMessageInChat(message);
@@ -103,47 +109,36 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
         EntityPlayer enPlayer = minecraft.player;
-        if (instance.getKey() > -1) {
-            if (Keyboard.isKeyDown(instance.getKey())) {
-                while (keyPressed || Keyboard.isRepeatEvent()) {
-                    return;
+        if (Keyboard.getEventKey() == instance.getKey() && !Keyboard.getEventKeyState() &&
+                instance.isModOn() && instance.getKey() > -1) {
+            if (instance.isRenderPlayers()) {
+                SetConfig(false);
+                if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
+                    minecraft.world.playerEntities.stream()
+                            .filter(entityPlayer ->
+                                    instance.getPlayersToRenderString()
+                                            .contains(entityPlayer.getName())).
+                            forEach(this::unmute);
                 }
-                if (instance.isModOn() && !keyPressed) {
-                    keyPressed = true;
-                    if (instance.isRenderPlayers()) {
-                        instance.setRenderPlayers(false);
-                        instance.setMuted(false);
-                        instance.saveConfig();
-                        if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
-                            minecraft.world.playerEntities.stream()
-                                    .filter(entityPlayer ->
-                                            instance.getPlayersToRenderString()
-                                                    .contains(entityPlayer.getName())).
-                                    forEach(this::unmute);
-                        }
-                        if (instance.isConfigMessage()) {
-                            sendMessage("[PH] - On");
-                        }
-                    } else {
-                        instance.setRenderPlayers(true);
-                        instance.setMuted(true);
-                        instance.saveConfig();
-                        if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
-                            minecraft.world.playerEntities.stream()
-                                    .filter(entityPlayer ->
-                                            instance.getPlayersToRenderString()
-                                                    .contains(entityPlayer.getName())).
-                                    forEach(this::mute);
-                        }
-                        if (instance.isConfigMessage()) {
-                            sendMessage("[PH] - Off");
-                        }
-                    }
-                } else {
-                    sendMessage("[PH] - Mod seems to be disabled. Check Config.");
+                if (instance.isConfigMessage()) {
+                    sendMessage("[PH] - Off");
                 }
-                keyPressed = false;
+            } else {
+                SetConfig(false);
+                if (instance.isVoiceexist() && instance.isPlayerUnmute()) {
+                    minecraft.world.playerEntities.stream()
+                            .filter(entityPlayer ->
+                                    instance.getPlayersToRenderString()
+                                            .contains(entityPlayer.getName())).
+                            forEach(this::mute);
+                }
+                if (instance.isConfigMessage()) {
+                    sendMessage("[PH] - On");
+                }
             }
+        } else if (Keyboard.getEventKey() == instance.getKey() &&
+                !Keyboard.getEventKeyState() && !instance.isModOn() && instance.getKey() > -1) {
+            sendMessage("[PH] - Mod seems to be disabled. Check Config.");
         }
     }
 }
