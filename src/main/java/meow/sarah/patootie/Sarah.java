@@ -1,10 +1,10 @@
-package meow.emily.patootie;
+package meow.sarah.patootie;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import meow.emily.patootie.events.PlayerEventHandler;
+import meow.sarah.patootie.events.PlayerEventHandler;
 import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.api.LabyModAddon;
@@ -19,9 +19,9 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.*;
 
-public class Emily extends LabyModAddon {
+public class Sarah extends LabyModAddon {
 
-    private static Emily instance;
+    private static Sarah instance;
     private VoiceChat voiceChat;
 
     private boolean renderPlayers;
@@ -42,7 +42,7 @@ public class Emily extends LabyModAddon {
 
     private int key;
 
-    public static Emily getInstance() {
+    public static Sarah getInstance() {
         return instance;
     }
 
